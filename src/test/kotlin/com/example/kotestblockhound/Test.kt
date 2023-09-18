@@ -1,31 +1,23 @@
 package com.example.kotestblockhound
 
+import io.kotest.common.runBlocking
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.blockhound.BlockHound
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.junit.jupiter.api.assertThrows
 import reactor.blockhound.BlockingOperationError
-import java.util.concurrent.ExecutionException
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
-
-private fun <A> Future<A>.getOrThrow(): A = try {
-    get()
-} catch (e: ExecutionException) {
-    throw e.cause!!
-}
 
 class Test : StringSpec({
     extension(BlockHound())
 
     "BlockingOperationError is thrown as expected" {
-        val myDispatcher = Executors.newFixedThreadPool(1) { r ->
-            Executors.defaultThreadFactory().newThread(r).also { it.name = "MustNotBeBlocked" }
-        }
-
         assertThrows<BlockingOperationError> {
-            myDispatcher.submit {
-                Thread.sleep(100)
-            }.getOrThrow()
+            runBlocking {
+                withContext(Dispatchers.Default) {
+                    Thread.sleep(100)
+                }
+            }
         }
     }
 })

@@ -10,8 +10,8 @@ repositories {
     mavenCentral()
 }
 
-val kotestVersion = "5.6.2" // works
-// val kotestVersion = "5.7.2 // doesn't work
+// val kotestVersion = "5.6.2" // works
+val kotestVersion = "5.7.2" // doesn't work
 
 dependencies {
     testImplementation(group = "io.projectreactor.tools", name = "blockhound", version = "1.0.8.RELEASE")
